@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#2563EB" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="My Money" />
+  <title>My Money v2.2</title>
+
+  <link rel="manifest" id="manifestLink" href="" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=DM+Sans:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg:#FAF7EF;
+      --card:#FFFFFF;
+      --text:#111111;
+      --muted:#6B7280;
+      --border:#111111;
+      --primary:#2563EB;
+      --primary-light:#3B82F6;
+      --success:#22C55E;
+      --danger:#EF4444;
+      --warning:#F59E0B;
+      --atm:#3B82F6;
+      --saving:#8B5CF6;
+      --highlight:#D9FF3F;
+      --neon-yellow:#FFF200;
+      --neon-green:#A3E635;
+      --neon-purple:#C084FC;
+      --neon-pink:#F472B6;
+      --shadow:6px 6px 0 #111111;
+      --shadow-sm:4px 4px 0 #111111;
+      --radius:8px;
+      --radius-lg:16px;
+      --focus:0 0 0 4px rgba(37,99,235,.15);
+      --border-width:4px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    [data-theme="dark"]{
+      --bg:#0F1115;
+      --card:#171A21;
+      --text:#F9FAFB;
+      --muted:#9CA3AF;
+      --border:#111111;
+      --shadow:6px 6px 0 #000000;
+      --shadow-sm:4px 4px 0 #000000;
+      --focus:0 0 0 4px rgba(37,99,235,.22);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;overflow:hidden}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      font-family:"DM Sans",system-ui,sans-serif;
+      padding-bottom: calc(105px + var(--safe-bottom));
+    }
+    button,input,select,textarea{font:inherit}
+    
+    .app{max-width:480px;margin:0 auto;padding:14px 14px 0 14px}
+    
+    /* Neo-Brutalism Base Styles */
+    .topbar,.card,.tab,.action,.item,.input,select,textarea,.btn,.chip,.switch,.pin-key,.day,.toggle,.account,.transfer-card{
+      border:var(--border-width) solid var(--border);
+      box-shadow:var(--shadow-sm);
+    }
+    
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:14px;background:var(--card);border-radius:var(--radius-lg);padding:12px;
+      position:sticky;top:14px;z-index:30;
+    }
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .logo{
+      width:46px;height:46px;border-radius:12px;background:var(--primary);color:#fff;
+      display:grid;place-items:center;font-family:"Space Grotesk",sans-serif;font-weight:900;font-size:22px;
+      border:3px solid var(--border);box-shadow:3px 3px 0 var(--border);flex-shrink:0
+    }
+    .brand h1{font-family:"Space Grotesk",sans-serif;font-size:16px;font-weight:900;line-height:1;white-space:nowrap}
+    .brand p{font-size:11px;color:var(--muted);font-weight:800}
+    .header-meta{display:flex;gap:6px;align-items:center;flex-shrink:0}
+    .meta-pill{
+      background:var(--highlight);padding:6px 8px;border-radius:8px;font-size:10px;font-weight:900;
+      border:3px solid var(--border);box-shadow:3px 3px 0 var(--border);white-space:nowrap;
+      display:none;
+    }
+    .icon-btn{
+      width:36px;height:36px;border-radius:8px;background:var(--card);color:var(--text);
+      display:grid;place-items:center;cursor:pointer;position:relative;
+      border:3px solid var(--border);box-shadow:3px 3px 0 var(--border);font-size:14px
+    }
+    .icon-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--border)}
+    
+    .badge{
+      position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;
+      background:var(--danger);color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center;border:2px solid var(--bg)
+    }
+    .view{display:none;padding-bottom:10px}
+    .view.active{display:block;animation:fadeUp .25s ease both}
+    
+    .card{
+      background:var(--card);border-radius:var(--radius-lg);padding:16px;margin-bottom:14px;
+      animation:fadeUp .3s ease both
+    }
+    
+    /* Neo-Brutalism Hero Card */
+    .hero{
+      background:linear-gradient(135deg, var(--neon-purple), #7C3AED);
+      color:#fff;position:relative;overflow:hidden
+    }
+    .hero::after{
+      content:"";position:absolute;right:-18px;top:-18px;width:140px;height:140px;border-radius:50%;
+      background:var(--neon-yellow);border:4px solid var(--border)
+    }
+    .hero-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;position:relative;z-index:1}
+    .greet{font-size:14px;opacity:.95;font-family:"Space Grotesk",sans-serif;font-weight:900}
+    .time{font-size:32px;font-weight:900;letter-spacing:-.04em;margin-top:6px;font-family:"IBM Plex Mono",monospace}
+    .date{font-size:12px;opacity:.95;margin-top:4px;font-weight:800}
+    .balance{
+      margin-top:14px;font-size:30px;font-weight:900;letter-spacing:-.04em;
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:relative;z-index:1
+    }
+    .balance small{
+      font-size:12px;font-weight:900;background:rgba(255,255,255,.2);padding:7px 10px;border-radius:8px;cursor:pointer;
+      border:2px solid rgba(255,255,255,.3)
+    }
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;position:relative;z-index:1}
+    .mini{
+      padding:12px;border-radius:12px;background:rgba(255,255,255,.15);border:3px solid rgba(17,17,17,.5)
+    }
+    .mini span{display:block;font-size:10px;opacity:.95;font-weight:800;text-transform:uppercase}
+    .mini strong{display:block;margin-top:6px;font-size:15px;font-family:"Space Grotesk",sans-serif;font-weight:900}
+    
+    /* Section Titles - Oversized */
+    .section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+    .section-title h2{
+      font-size:18px;font-family:"Space Grotesk",sans-serif;font-weight:900;
+      background:var(--highlight);padding:4px 12px;border-radius:6px;
+      border:3px solid var(--border);box-shadow:3px 3px 0 var(--border)
+    }
+    .section-title small{color:var(--muted);font-weight:800;font-size:12px}
+    
+    .grid3,.grid4{display:grid;gap:10px}
+    .grid3{grid-template-columns:repeat(3,1fr)}
+    .grid4{grid-template-columns:repeat(4,1fr)}
+    
+    /* Neo-Brutalism Action Buttons */
+    .action{
+      background:var(--neon-yellow);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;
+      transition:transform .15s ease,box-shadow .15s ease;border:4px solid var(--border);box-shadow:4px 4px 0 var(--border)
+    }
+    .action:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--border)}
+    .action:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--border)}
+    .action i{font-size:20px;color:var(--text);font-weight:900}
+    .action span{display:block;font-size:11px;color:var(--text);margin-top:8px;line-height:1.2;font-weight:900}
+    
+    /* Transfer Card - Special Neo-Brutalism */
+    .transfer-card{
+      background:var(--neon-green);border-radius:12px;padding:10px 14px;cursor:pointer;
+      border:4px solid var(--border);box-shadow:4px 4px 0 var(--border);
+      font-weight:900;font-size:14px;text-align:center;transition:all .15s ease;
+      display:flex;align-items:center;justify-content:center;gap:8px
+    }
+    .transfer-card:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--border)}
+    .transfer-card i{font-size:20px}
+    
+    /* Fixed Bottom Navigation */
+    .tabs{
+      display:grid;grid-template-columns:repeat(5,1fr);gap:4px;
+      position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+      width:min(480px,100%);padding:8px 8px calc(8px + var(--safe-bottom));
+      background:var(--card);
+      border-top:4px solid var(--border);
+      border-left:4px solid var(--border);
+      border-right:4px solid var(--border);
+      border-bottom:none;
+      border-radius:16px 16px 0 0;
+      z-index:40;box-shadow:0 -4px 0 var(--border);
+      backdrop-filter:blur(10px);
+    }
+    .tab{
+      background:var(--card);border-radius:8px;padding:8px 2px;color:var(--muted);
+      display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;font-weight:900;cursor:pointer;
+      border:3px solid var(--border);box-shadow:3px 3px 0 var(--border);
+      transition:all .1s ease;min-width:0
+    }
+    .tab.active{background:var(--highlight);color:var(--text);transform:translate(1px,1px);box-shadow:2px 2px 0 var(--border)}
+    .tab .tab-icon{font-size:16px;line-height:1}
+    .tab .tab-label{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+    
+    .list{display:flex;flex-direction:column;gap:10px}
+    .item{
+      display:flex;gap:12px;align-items:flex-start;background:var(--card);padding:14px;border-radius:12px;
+      border:3px solid var(--border);box-shadow:3px 3px 0 var(--border)
+    }
+    .ico{
+      width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+      background:var(--neon-yellow);border:3px solid var(--border);color:var(--text);flex:0 0 auto;font-size:18px;font-weight:900
+    }
+    .item h3{font-size:15px;font-family:"Space Grotesk",sans-serif;font-weight:900}
+    .item p,.item small{color:var(--muted);font-size:12px;font-weight:600}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .chip{
+      padding:8px 12px;border-radius:8px;background:var(--card);font-size:11px;color:var(--text);cursor:pointer;
+      font-weight:900;border:3px solid var(--border);box-shadow:3px 3px 0 var(--border);white-space:nowrap
+    }
+    .chip:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--border)}
+    
+    .input,select,textarea{
+      width:100%;padding:12px 14px;border-radius:8px;background:var(--card);color:var(--text);
+      outline:none;border:4px solid var(--border);font-weight:800;font-size:14px
+    }
+    .input:focus,select:focus,textarea:focus{box-shadow:var(--focus);border-color:var(--primary)}
+    
+    .btn{
+      width:100%;padding:14px 16px;border-radius:8px;border:4px solid var(--border);cursor:pointer;
+      background:var(--primary);color:#fff;font-weight:900;font-family:"Space Grotesk",sans-serif;
+      box-shadow:4px 4px 0 var(--border);font-size:15px;transition:all .1s ease
+    }
+    .btn:hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 var(--border)}
+    .btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--border)}
+    .btn.secondary{background:var(--card);color:var(--text)}
+    .btn.danger{background:var(--danger);color:#fff}
+    .btn.warning{background:var(--warning);color:#fff}
+    
+    /* Neo-Brutalism Budget Progress Bar */
+    .neo-progress{
+      width:100%;height:18px;border-radius:6px;background:var(--card);overflow:hidden;
+      border:4px solid var(--border);box-shadow:3px 3px 0 var(--border);margin-top:8px
+    }
+    .neo-progress-fill{
+      height:100%;border-radius:2px;transition:width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
+      display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#111
+    }
+    .neo-progress-fill.safe{background:linear-gradient(90deg, var(--neon-green), #84CC16)}
+    .neo-progress-fill.warning{background:linear-gradient(90deg, var(--neon-yellow), #FBBF24)}
+    .neo-progress-fill.danger{background:linear-gradient(90deg, var(--neon-pink), #EF4444);animation:pulseDanger 1.5s infinite}
+    
+    @keyframes pulseDanger{
+      0%,100%{opacity:1}
+      50%{opacity:0.85}
+    }
+    
+    .muted{color:var(--muted)}
+    .sep{height:3px;background:var(--border);margin:14px 0;border-radius:2px}
+    
+    .pill{
+      display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;
+      background:var(--highlight);color:var(--text);font-size:10px;font-weight:900;
+      border:3px solid var(--border);box-shadow:2px 2px 0 var(--border)
+    }
+    .pill.warn{background:var(--neon-yellow)}
+    .pill.danger-pill{background:var(--neon-pink);animation:pulseDanger 1.5s infinite}
+    
+    /* Modal Confirmation - Neo-Brutalism */
+    .confirm-overlay{
+      position:fixed;inset:0;background:rgba(17,17,17,.7);display:none;z-index:70;align-items:center;justify-content:center;padding:20px
+    }
+    .confirm-overlay.active{display:flex}
+    .confirm-modal{
+      background:var(--bg);border:5px solid var(--border);border-radius:12px;padding:24px;
+      max-width:380px;width:100%;box-shadow:8px 8px 0 var(--border);
+      animation:modalPop .3s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+    }
+    @keyframes modalPop{
+      from{transform:scale(.8);opacity:0}
+      to{transform:scale(1);opacity:1}
+    }
+    .confirm-modal h2{
+      font-family:"Space Grotesk",sans-serif;font-weight:900;font-size:22px;margin-bottom:12px;
+      display:flex;align-items:center;gap:8px
+    }
+    .confirm-modal p{margin-bottom:16px;font-weight:800;font-size:13px;line-height:1.5}
+    .confirm-modal .danger-input{
+      border:4px solid var(--danger);background:var(--card);color:var(--danger);font-weight:900;text-align:center;letter-spacing:2px
+    }
+    
+    .toast-wrap{
+      position:fixed;left:50%;bottom:100px;transform:translateX(-50%);
+      width:min(400px,calc(100% - 20px));z-index:60;display:flex;flex-direction:column;gap:8px;pointer-events:none
+    }
+    .toast{
+      background:var(--card);border:4px solid var(--border);border-radius:8px;padding:12px 14px;
+      box-shadow:var(--shadow-sm);display:flex;justify-content:space-between;gap:10px;animation:slideIn .22s ease both;
+      font-weight:800;pointer-events:auto;font-size:13px
+    }
+    
+    .overlay{
+      position:fixed;inset:0;background:rgba(17,17,17,.28);display:none;z-index:50;align-items:flex-end
+    }
+    .overlay.active{display:flex}
+    .sheet{
+      width:100%;max-width:480px;margin:0 auto;background:var(--bg);border-radius:16px 16px 0 0;
+      padding:16px;border:4px solid var(--border);max-height:80vh;overflow-y:auto;
+      -webkit-overflow-scrolling:touch
+    }
+    .sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:sticky;top:0;background:var(--bg);z-index:1;padding-bottom:8px}
+    .sheet-head strong{font-size:18px;font-family:"Space Grotesk",sans-serif;font-weight:900}
+    .xbtn{
+      background:var(--danger);border:3px solid var(--border);color:var(--text);font-size:20px;cursor:pointer;
+      font-weight:900;width:36px;height:36px;border-radius:8px;display:grid;place-items:center;box-shadow:3px 3px 0 var(--border)
+    }
+    .xbtn:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--border)}
+    
+    .form{display:grid;gap:12px}
+    
+    .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+    .day-head,.day{
+      text-align:center;border-radius:8px;padding:8px 0;background:var(--card);border:3px solid var(--border);font-size:12px
+    }
+    .day-head{font-size:10px;color:var(--muted);font-weight:900;background:transparent;border:none;padding:4px 0}
+    .day{min-height:50px;position:relative;cursor:pointer;font-weight:800;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .day .dot{width:6px;height:6px;border-radius:50%;background:var(--primary);display:block;margin-top:2px;border:2px solid var(--border)}
+    .day.muted{opacity:.35}
+    .day.active{background:var(--neon-green)}
+    
+    .chart{width:100%;min-height:150px;border-radius:12px;background:var(--card);border:4px solid var(--border);padding:14px}
+    
+    .pin-screen{
+      position:fixed;inset:0;background:var(--bg);z-index:80;display:none;align-items:center;justify-content:center;padding:20px
+    }
+    .pin-box{width:min(360px,100%);text-align:center}
+    .pin-dots{display:flex;justify-content:center;gap:14px;margin:18px 0}
+    .pin-dot{width:16px;height:16px;border-radius:50%;border:4px solid var(--border);background:var(--card)}
+    .pin-dot.on{background:var(--neon-yellow)}
+    .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+    .pin-key{
+      height:60px;border-radius:12px;background:var(--card);color:var(--text);font-size:20px;font-weight:900;cursor:pointer;
+      border:4px solid var(--border);box-shadow:4px 4px 0 var(--border)
+    }
+    .pin-key:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--border)}
+    
+    .splash{
+      position:fixed;inset:0;z-index:100;background:linear-gradient(135deg,var(--neon-purple),#7C3AED);
+      color:#fff;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px
+    }
+    .spinner{
+      width:46px;height:46px;border-radius:50%;border:5px solid rgba(255,255,255,.3);border-top-color:var(--neon-yellow);animation:spin 1s linear infinite
+    }
+    
+    .toggle{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;
+      background:var(--card);border:3px solid var(--border);font-weight:800
+    }
+    .switch{
+      width:52px;height:30px;border-radius:999px;background:#CBD5E1;position:relative;cursor:pointer;flex:0 0 auto;
+      border:3px solid var(--border)
+    }
+    .switch i{
+      position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:var(--bg);box-shadow:3px 3px 0 var(--border);transition:.2s;
+      border:2px solid var(--border)
+    }
+    .switch.on{background:var(--neon-green)}
+    .switch.on i{left:24px}
+    
+    .accounts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .account{
+      background:var(--card);border:4px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:transform .15s ease;
+      box-shadow:4px 4px 0 var(--border);text-align:center
+    }
+    .account:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--border)}
+    .account .aico{font-size:20px;margin-bottom:6px}
+    .account h3{font-size:13px;font-family:"Space Grotesk",sans-serif;font-weight:900}
+    .account p{font-size:12px;color:var(--muted);margin-top:4px;font-weight:800}
+    
+    /* Subscription Badge */
+    .sub-badge{
+      background:var(--neon-purple);color:#fff;padding:2px 6px;border-radius:6px;font-size:9px;font-weight:900;
+      border:2px solid var(--border);box-shadow:2px 2px 0 var(--border);margin-left:4px
+    }
+
+    /* Floating Action Button */
+    #fabAdd{
+      position:fixed;bottom:calc(95px + var(--safe-bottom));right:max(20px, calc((100% - 440px) / 2));
+      width:52px;height:52px;border-radius:50%;background:var(--neon-yellow);
+      border:4px solid var(--border);box-shadow:4px 4px 0 var(--border);
+      font-size:28px;font-weight:900;cursor:pointer;z-index:45;
+      display:grid;place-items:center;transition:all .1s ease;
+    }
+    #fabAdd:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--border)}
+    
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes slideIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+    
+    @media (min-width:420px){
+      .meta-pill{display:block}
+    }
+    
+    @media (max-width:380px){
+      .grid4,.accounts{grid-template-columns:repeat(2,1fr)}
+      .time{font-size:26px}
+      .stats{grid-template-columns:1fr}
+      .balance{font-size:24px}
+      .section-title h2{font-size:16px}
+      .topbar{padding:10px}
+      .brand h1{font-size:14px}
+      .card{padding:12px;margin-bottom:10px}
+      .tabs{padding:6px 6px calc(6px + var(--safe-bottom));gap:3px}
+      .tab{padding:6px 1px;font-size:8px}
+      .tab .tab-icon{font-size:14px}
+      .tab .tab-label{font-size:7px}
+    }
+  </style>
+</head>
+<body>
+  <div class="splash" id="splash">
+    <div class="logo" style="width:64px;height:64px;border-radius:16px;font-size:28px">$</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:20px">My Money v2.2</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="pin-screen" id="pinScreen">
+    <div class="pin-box">
+      <div class="logo" style="margin:0 auto 14px;font-size:22px">$</div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:900">Masukkan PIN</h2>
+      <p class="muted" id="pinHint">Aplikasi terkunci</p>
+      <div class="pin-dots" id="pinDots"></div>
+      <div class="pin-pad" id="pinPad"></div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn secondary" id="pinClear">Hapus</button>
+        <button class="btn" id="pinSubmit">Buka</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Reset -->
+  <div class="confirm-overlay" id="confirmReset">
+    <div class="confirm-modal">
+      <h2>⚠️ Konfirmasi Reset</h2>
+      <p>Ini akan <strong style="color:var(--danger)">menghapus permanen</strong> semua data termasuk transaksi, budget, target, dan pengaturan.</p>
+      <p style="font-size:12px;color:var(--muted)">Ketik <strong style="background:var(--danger);color:#fff;padding:2px 8px;border-radius:4px">HAPUS</strong> di bawah untuk melanjutkan:</p>
+      <input class="input danger-input" id="resetConfirmInput" placeholder="Ketik HAPUS di sini..." autocomplete="off" />
+      <div class="row" style="margin-top:14px">
+        <button class="btn secondary" id="cancelReset" style="flex:1">Batal</button>
+        <button class="btn danger" id="executeReset" style="flex:1" disabled>Reset Semua</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">$</div>
+        <div>
+          <h1>My Money</h1>
+          <p id="subTitle">Gen Z Finance</p>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="meta-pill" id="clockMini">00:00</div>
+        <button class="icon-btn" id="notifBtn" aria-label="Notifikasi">🔔<span class="badge" id="notifBadge" style="display:none">0</span></button>
+        <button class="icon-btn" id="menuBtn" aria-label="Menu">☰</button>
+      </div>
+    </div>
+
+    <!-- Dashboard View -->
+    <section class="view active" id="view-dashboard">
+      <div class="card hero">
+        <div class="hero-top">
+          <div>
+            <div class="greet" id="greeting">Selamat Pagi</div>
+            <div class="time" id="digitalClock">00:00</div>
+            <div class="date" id="dateText">-</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pill" id="themePill">Light Mode</div>
+          </div>
+        </div>
+        <div class="balance">
+          <span id="balanceText">Rp 0</span>
+          <small id="balanceEye">Sembunyikan</small>
+        </div>
+        <div class="stats">
+          <div class="mini"><span>Total Saldo</span><strong id="balanceDelta">+0%</strong></div>
+          <div class="mini"><span>Saldo Min</span><strong id="minBalanceText">Rp 0</strong></div>
+          <div class="mini"><span>Pemasukan</span><strong id="incomeText">Rp 0</strong></div>
+          <div class="mini"><span>Pengeluaran</span><strong id="expenseText">Rp 0</strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h2>💳 Akun</h2><small>Cash / ATM / Tabungan</small></div>
+        <div class="accounts">
+          <div class="account" data-account="Cash"><div class="aico">💵</div><h3>Cash</h3><p id="cashText">Rp 0</p></div>
+          <div class="account" data-account="ATM"><div class="aico">🏧</div><h3>ATM</h3><p id="atmText">Rp 0</p></div>
+          <div class="account" data-account="Tabungan"><div class="aico">🏦</div><h3>Tabungan</h3><p id="savingText">Rp 0</p></div>
+        </div>
+        <div class="transfer-card" id="transferBtn" style="margin-top:10px">
+          <i>↔️</i> Transfer Antar Akun
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h2>⚡ Aksi</h2><small>Instan</small></div>
+        <div class="grid4">
+          <div class="action" data-open="tx"><i>＋</i><span>Tambah</span></div>
+          <div class="action" data-open="budget"><i>◔</i><span>Budget</span></div>
+          <div class="action" data-open="goal"><i>🎯</i><span>Target</span></div>
+          <div class="action" data-open="reminder"><i>⏰</i><span>Reminder</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h2>📅 Kalender</h2><small id="calLabel"></small></div>
+        <div class="row" style="justify-content:space-between;margin-bottom:10px">
+          <button class="chip" id="prevMonth">‹ Bulan</button>
+          <button class="chip" id="nextMonth">Bulan ›</button>
+        </div>
+        <div class="calendar" id="calendar"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h2>📊 Budget</h2><small id="budgetState">Progress</small></div>
+        <div id="budgetList" class="list"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h2>🎯 Target</h2><small>Progress</small></div>
+        <div id="goalList" class="list"></div>
+      </div>
+    </section>
+
+    <!-- History View -->
+    <section class="view" id="view-history">
+      <div class="card">
+        <div class="section-title"><h2>📋 Riwayat</h2><small>Realtime</small></div>
+        <input class="input" id="searchTx" placeholder="Cari transaksi..." />
+        <div class="row" style="margin-top:10px">
+          <select id="filterCategory" class="input" style="flex:1"></select>
+          <select id="sortTx" class="input" style="flex:1">
+            <option value="newest">Terbaru</option>
+            <option value="oldest">Terlama</option>
+            <option value="largest">Terbesar</option>
+            <option value="smallest">Terkecil</option>
+          </select>
+        </div>
+      </div>
+      <div id="historyList" class="list"></div>
+    </section>
+
+    <!-- Charts View -->
+    <section class="view" id="view-charts">
+      <div class="card">
+        <div class="section-title"><h2>📈 Laporan</h2><small>Visual</small></div>
+        <div class="chart" id="chartBox"></div>
+        <div class="sep"></div>
+        <div id="chartSummary" class="list"></div>
+      </div>
+    </section>
+
+    <!-- Notifications View -->
+    <section class="view" id="view-notif">
+      <div class="card">
+        <div class="section-title"><h2>🔔 Notif</h2><small id="notifCountText">0 item</small></div>
+        <div id="notifList" class="list"></div>
+      </div>
+    </section>
+
+    <!-- Settings View -->
+    <section class="view" id="view-settings">
+      <div class="card">
+        <div class="section-title"><h2>⚙ Pengaturan</h2><small>App</small></div>
+        <div class="form">
+          <select id="themeSelect" class="input">
+            <option value="light">Light Mode</option>
+            <option value="dark">Dark Mode</option>
+            <option value="auto">Auto Theme</option>
+          </select>
+          <select id="langSelect" class="input">
+            <option value="id">Bahasa Indonesia</option>
+          </select>
+          <select id="currencySelect" class="input">
+            <option value="IDR">Format Rupiah</option>
+          </select>
+          <select id="timeFormatSelect" class="input">
+            <option value="24">Jam 24</option>
+            <option value="12">Jam 12</option>
+          </select>
+          <input id="minBalance" class="input" type="number" inputmode="numeric" placeholder="Saldo Minimum" />
+          <div class="toggle"><div><strong>Sembunyikan saldo</strong></div><div class="switch" id="hideBalanceSwitch"><i></i></div></div>
+          <div class="toggle"><div><strong>Suara pengingat</strong></div><div class="switch" id="soundReminderSwitch"><i></i></div></div>
+          <div class="row">
+            <button class="btn secondary" id="backupBtn" style="flex:1">💾 Backup</button>
+            <button class="btn secondary" id="restoreBtn" style="flex:1">📥 Restore</button>
+          </div>
+          <button class="btn danger" id="resetBtn">🗑 Reset Semua Data</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h2>🔒 Keamanan</h2><small>PIN</small></div>
+        <div class="form">
+          <input id="pinInput" class="input" type="password" inputmode="numeric" maxlength="4" placeholder="Set PIN 4 digit" />
+          <button class="btn secondary" id="savePinBtn">Simpan PIN</button>
+          <button class="btn secondary" id="lockNowBtn">🔒 Lock Screen</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h2>🗄 Data</h2><small>Export</small></div>
+        <div class="form">
+          <button class="btn secondary" id="exportJsonBtn">📦 Export JSON</button>
+          <button class="btn secondary" id="importJsonBtn">📥 Import JSON</button>
+          <button class="btn secondary" id="exportCsvBtn">📊 Export CSV</button>
+          <button class="btn secondary" id="exportExcelBtn">📈 Export Excel</button>
+          <button class="btn secondary" id="exportPdfBtn">📄 Export PDF</button>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="section-title"><h2>ℹ Tentang</h2><small>Info</small></div>
+        <p class="muted" style="font-weight:800">My Money v2.2 — Neo Brutalism Gen Z Finance App.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bottom Navigation - 5 Tab -->
+  <nav class="tabs">
+    <button class="tab active" data-view="dashboard">
+      <span class="tab-icon">⌂</span>
+      <span class="tab-label">Home</span>
+    </button>
+    <button class="tab" data-view="history">
+      <span class="tab-icon">☰</span>
+      <span class="tab-label">Riwayat</span>
+    </button>
+    <button class="tab" data-view="charts">
+      <span class="tab-icon">◔</span>
+      <span class="tab-label">Laporan</span>
+    </button>
+    <button class="tab" data-view="notif">
+      <span class="tab-icon">🔔</span>
+      <span class="tab-label">Notif</span>
+    </button>
+    <button class="tab" data-view="settings">
+      <span class="tab-icon">⚙</span>
+      <span class="tab-label">Set</span>
+    </button>
+  </nav>
+
+  <!-- Floating Action Button -->
+  <button id="fabAdd" onclick="txForm()" aria-label="Tambah Transaksi">＋</button>
+
+  <div class="overlay" id="overlay">
+    <div class="sheet" id="sheet">
+      <div class="sheet-head">
+        <strong id="sheetTitle">Form</strong>
+        <button class="xbtn" id="closeSheet">×</button>
+      </div>
+      <div id="sheetBody"></div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <script>
+    const APP_VERSION = '2.2';
+    
+    const LS = {
+      get:(k,d)=>{ try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+      set:(k,v)=>localStorage.setItem(k, JSON.stringify(v))
+    };
+
+    const state = {
+      tx: LS.get('mm_tx', []),
+      notif: LS.get('mm_notif', []),
+      reminders: LS.get('mm_reminders', []),
+      budgets: LS.get('mm_budgets', []),
+      goals: LS.get('mm_goals', []),
+      transfers: LS.get('mm_transfers', []),
+      settings: LS.get('mm_settings', { theme:'light', lang:'id', currency:'IDR', timeFormat:'24', minBalance:0, hideBalance:false, soundReminder:false, pin:'' }),
+      calendar: { year:new Date().getFullYear(), month:new Date().getMonth(), selected:null },
+      profile: LS.get('mm_profile', { name:'My Money User', avatar:'👤' })
+    };
+
+    const fmt = (n)=> new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n||0);
+    const pad = (n)=> String(n).padStart(2,'0');
+    const todayStr = (d=new Date()) => d.toISOString().slice(0,10);
+    const timeStr = (d=new Date()) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    const dateHuman = (d=new Date()) => d.toLocaleDateString('id-ID',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+    const uuid = ()=> Math.random().toString(36).slice(2)+Date.now().toString(36);
+    const sum = (arr, f)=> arr.reduce((x,i)=>x+(f?f(i):i.amount||0), 0);
+
+    function getGreeting(){
+      const h = new Date().getHours();
+      if(h < 11) return 'Selamat Pagi, Sobat!';
+      if(h < 15) return 'Selamat Siang, Gengs!';
+      if(h < 18) return 'Selamat Sore, Gengs!';
+      return 'Selamat Malam, Gengs!';
+    }
+
+    function saveAll(){
+      LS.set('mm_tx', state.tx);
+      LS.set('mm_notif', state.notif);
+      LS.set('mm_reminders', state.reminders);
+      LS.set('mm_budgets', state.budgets);
+      LS.set('mm_goals', state.goals);
+      LS.set('mm_transfers', state.transfers);
+      LS.set('mm_settings', state.settings);
+      LS.set('mm_profile', state.profile);
+    }
+
+    function toast(msg){
+      const wrap = document.getElementById('toastWrap');
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.innerHTML = `<span>${msg}</span><button class="xbtn" style="width:24px;height:24px;font-size:14px">×</button>`;
+      el.querySelector('button').onclick = ()=> el.remove();
+      wrap.appendChild(el);
+      setTimeout(()=> el.remove(), 2800);
+    }
+
+    function pushNotif(title, category='info'){
+      const n = { id:uuid(), title, category, date:new Date().toISOString() };
+      state.notif.unshift(n);
+      state.notif = state.notif.slice(0,80);
+      saveAll();
+      renderNotif();
+      renderBadge();
+      if(category !== 'silent') toast(title);
+      if('Notification' in window && Notification.permission === 'granted') {
+        try { new Notification('My Money', { body:title }); } catch {}
+      }
+    }
+
+    function applyTheme(){
+      const pref = state.settings.theme;
+      const dark = pref === 'dark' || (pref === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      document.querySelector('meta[name="theme-color"]').content = dark ? '#0F1115' : '#2563EB';
+      document.getElementById('themePill').textContent = pref === 'auto' ? '⚡ Auto' : (pref === 'dark' ? '🌙 Dark' : '☀️ Light');
+    }
+
+    function getAccountBalance(accountName) {
+      const txSum = sum(state.tx.filter(x => x.account === accountName && x.type !== 'transfer'));
+      const transferIn = sum(state.transfers.filter(t => t.toAccount === accountName));
+      const transferOut = sum(state.transfers.filter(t => t.fromAccount === accountName));
+      return txSum + transferIn - transferOut;
+    }
+
+    function calc(){
+      const income = sum(state.tx.filter(x=>x.type==='income'));
+      const expense = sum(state.tx.filter(x=>x.type==='expense'));
+      const saving = sum(state.tx.filter(x=>x.type==='saving'));
+      const cashBal = getAccountBalance('Cash');
+      const atmBal = getAccountBalance('ATM');
+      const totalTransferable = cashBal + atmBal;
+      return { income, expense, saving, balance: income - expense + saving, cashBal, atmBal, totalTransferable };
+    }
+
+    function animateNumber(el, to){
+      const from = Number(el.dataset.value || 0);
+      const start = performance.now(), dur = 500;
+      const tick = (t)=>{
+        const p = Math.min(1,(t-start)/dur);
+        const v = Math.round(from + (to-from)*p);
+        el.textContent = fmt(v);
+        if(p < 1) requestAnimationFrame(tick); else el.dataset.value = to;
+      };
+      requestAnimationFrame(tick);
+    }
+
+    function renderDashboard(){
+      const c = calc();
+      document.getElementById('greeting').textContent = getGreeting();
+      document.getElementById('digitalClock').textContent = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      document.getElementById('clockMini').textContent = timeStr();
+      document.getElementById('dateText').textContent = dateHuman();
+      document.getElementById('minBalanceText').textContent = fmt(state.settings.minBalance || 0);
+
+      const bal = document.getElementById('balanceText');
+      const hidden = !!state.settings.hideBalance;
+      document.getElementById('balanceEye').textContent = hidden ? '👁 Tampilkan' : '🙈 Sembunyikan';
+      document.getElementById('balanceEye').onclick = ()=>{ state.settings.hideBalance = !state.settings.hideBalance; saveAll(); renderDashboard(); };
+
+      if(hidden){ bal.textContent = '••••••••'; bal.dataset.value = 0; }
+      else animateNumber(bal, c.balance);
+
+      animateNumber(document.getElementById('incomeText'), c.income);
+      animateNumber(document.getElementById('expenseText'), c.expense);
+      animateNumber(document.getElementById('savingText'), c.saving);
+
+      const prev = state.prevBalance ?? c.balance;
+      const delta = prev ? (((c.balance - prev) / Math.abs(prev)) * 100) : 0;
+      document.getElementById('balanceDelta').textContent = `${delta >= 0 ? '+' : ''}${delta.toFixed(1)}%`;
+      state.prevBalance = c.balance;
+
+      document.getElementById('cashText').textContent = fmt(c.cashBal);
+      document.getElementById('atmText').textContent = fmt(c.atmBal);
+      document.getElementById('savingText').textContent = fmt(c.saving);
+
+      renderCalendar();
+      renderBudgets();
+      renderGoals();
+      renderStats();
+      processSubscriptions();
+    }
+
+    function renderHistory(){
+      const q = document.getElementById('searchTx').value.toLowerCase();
+      const cat = document.getElementById('filterCategory').value;
+      const sort = document.getElementById('sortTx').value;
+      let arr = [...state.tx, ...state.transfers.map(t => ({
+        ...t,
+        type: 'transfer',
+        title: `Transfer: ${t.fromAccount} → ${t.toAccount}`,
+        category: 'Transfer',
+        note: t.note || '',
+        dateTime: t.dateTime,
+        date: t.date
+      }))];
+      if(q) arr = arr.filter(x => [x.title,x.category,x.account,x.note].join(' ').toLowerCase().includes(q));
+      if(cat !== 'all') arr = arr.filter(x => x.category === cat || (cat === 'Transfer' && x.type === 'transfer'));
+      arr.sort((a,b)=>{
+        if(sort==='oldest') return new Date(a.dateTime)-new Date(b.dateTime);
+        if(sort==='largest') return b.amount-a.amount;
+        if(sort==='smallest') return a.amount-b.amount;
+        return new Date(b.dateTime)-new Date(a.dateTime);
+      });
+      document.getElementById('historyList').innerHTML = arr.map(x=>{
+        const isTransfer = x.type === 'transfer';
+        const icon = isTransfer ? '↔️' : (x.type==='income'?'⇧':x.type==='expense'?'⇩':'◒');
+        const color = isTransfer ? 'var(--neon-purple)' : (x.type==='expense'?'var(--danger)':'var(--success)');
+        const prefix = isTransfer ? '↔' : (x.type==='expense'?'-':'+');
+        return `
+        <div class="item" data-swipe="${x.id}">
+          <div class="ico" style="background:${isTransfer?'var(--neon-purple)':'var(--neon-yellow)'}">${icon}</div>
+          <div style="flex:1">
+            <h3>${x.title} ${x.recurring ? '<span class="sub-badge">🔁 Berulang</span>' : ''}</h3>
+            <p>${x.category} • ${x.account || (isTransfer ? `${x.fromAccount}→${x.toAccount}` : 'Cash')}</p>
+            <small>${new Date(x.dateTime).toLocaleDateString('id-ID')} • ${new Date(x.dateTime).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</small>
+          </div>
+          <div style="text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+            <strong style="color:${color};font-size:16px">${isTransfer ? '↔' : prefix}${fmt(x.amount)}</strong>
+            <div class="row">
+              ${isTransfer ? '' : `<button class="chip" onclick="editTx('${x.id}')">Edit</button>`}
+              <button class="chip" style="border-color:var(--danger)" onclick="deleteItem('${x.id}','${isTransfer?'transfer':'tx'}')">Hapus</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('') || `<div class="card muted" style="font-weight:800">Belum ada transaksi 🔥</div>`;
+    }
+
+    function renderCalendar(){
+      const {year,month} = state.calendar;
+      const first = new Date(year, month, 1);
+      const start = (first.getDay()+6)%7;
+      const days = new Date(year, month+1, 0).getDate();
+      const prevDays = new Date(year, month, 0).getDate();
+      const names = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+      const allDates = [...state.tx, ...state.transfers.map(t=>({...t,type:'transfer'}))];
+      const txDates = new Set(allDates.map(x=>x.date));
+      document.getElementById('calLabel').textContent = first.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+      const html = [
+        ...names.map(n=>`<div class="day-head">${n}</div>`),
+        ...Array.from({length:start},(_,i)=>`<div class="day muted">${prevDays-start+i+1}</div>`),
+        ...Array.from({length:days},(_,i)=>{
+          const d = i+1, ds = `${year}-${pad(month+1)}-${pad(d)}`;
+          const hit = txDates.has(ds);
+          const act = state.calendar.selected === ds ? 'active' : '';
+          return `<div class="day ${act}" data-date="${ds}">${d}${hit?'<span class="dot"></span>':''}</div>`;
+        })
+      ].join('');
+      document.getElementById('calendar').innerHTML = html;
+      document.querySelectorAll('.day[data-date]').forEach(el=>el.onclick=()=>{
+        state.calendar.selected = el.dataset.date;
+        renderCalendar();
+        showDayTransactions(el.dataset.date);
+      });
+    }
+
+    function showDayTransactions(date){
+      const list = [...state.tx, ...state.transfers.map(t=>({...t,type:'transfer'}))].filter(x=>x.date === date);
+      if(!list.length) return toast('Tidak ada transaksi di tanggal ini 📅');
+      openSheet(`📅 Transaksi ${date}`, `
+        <div class="list">
+          ${list.map(x=>{
+            const isTransfer = x.type === 'transfer';
+            return `
+            <div class="item">
+              <div class="ico" style="background:${isTransfer?'var(--neon-purple)':'var(--neon-yellow)'}">${isTransfer?'↔️':x.type==='income'?'⇧':'⇩'}</div>
+              <div style="flex:1">
+                <h3>${x.title || `Transfer: ${x.fromAccount}→${x.toAccount}`}</h3>
+                <p>${x.category || 'Transfer'} • ${x.account || `${x.fromAccount}→${x.toAccount}`}</p>
+                <small>${new Date(x.dateTime).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</small>
+              </div>
+              <strong style="color:${isTransfer?'var(--neon-purple)':x.type==='expense'?'var(--danger)':'var(--success)'}">${isTransfer?'↔':x.type==='expense'?'-':'+'}${fmt(x.amount)}</strong>
+            </div>`;
+          }).join('')}
+        </div>
+      `);
+    }
+
+    function renderBudgets(){
+      const el = document.getElementById('budgetList');
+      const monthKey = `${state.calendar.year}-${pad(state.calendar.month+1)}`;
+      const monthExpense = state.tx.filter(x=>x.type==='expense' && x.date.startsWith(monthKey));
+      el.innerHTML = state.budgets.map(b=>{
+        const used = sum(monthExpense.filter(x=>x.category===b.name));
+        const pct = Math.min(100, (used/b.limit)*100 || 0);
+        const barClass = pct >= 100 ? 'danger' : pct >= 80 ? 'warning' : 'safe';
+        const pillClass = pct >= 100 ? 'danger-pill' : pct >= 80 ? 'warn' : '';
+        if(pct >= 100 && !b.notified){ b.notified = true; pushNotif(`⚠️ Budget "${b.name}" HABIS!`, 'budget'); }
+        if(pct >= 80 && pct < 100 && !b.warned){ b.warned = true; pushNotif(`⚡ Budget "${b.name}" mendekati limit (${Math.round(pct)}%)`, 'budget'); }
+        return `
+          <div class="item">
+            <div class="ico" style="background:${pct>=100?'var(--neon-pink)':pct>=80?'var(--neon-yellow)':'var(--neon-green)'}">◔</div>
+            <div style="flex:1">
+              <h3>${b.name} 
+                <span class="pill ${pillClass}" style="margin-left:6px">${Math.round(pct)}%</span>
+                ${pct >= 100 ? '<span class="pill danger-pill" style="margin-left:4px">💀 Over!</span>' : ''}
+              </h3>
+              <p style="font-weight:800">${fmt(used)} / ${fmt(b.limit)}</p>
+              <div class="neo-progress">
+                <div class="neo-progress-fill ${barClass}" style="width:${pct}%">${pct >= 20 ? Math.round(pct)+'%' : ''}</div>
+              </div>
+            </div>
+          </div>`;
+      }).join('') || `<div class="muted" style="font-weight:800;padding:12px">Belum ada budget 🎯</div>`;
+      saveAll();
+    }
+
+    function renderGoals(){
+      const el = document.getElementById('goalList');
+      el.innerHTML = state.goals.map(g=>{
+        const current = Number(g.current || 0);
+        const pct = g.target ? Math.min(100, (current / g.target) * 100) : 0;
+        const remaining = Math.max(0, g.target-current);
+        const done = current >= g.target;
+        if(done && !g.done){ g.done = true; pushNotif(`🎉 Target "${g.name}" tercapai!`, 'goal'); }
+        const daysLeft = g.target > current ? Math.max(1, Math.ceil(remaining / Math.max(1, current || 1))) : 0;
+        const barClass = done ? 'safe' : pct >= 50 ? 'warning' : 'safe';
+        return `
+          <div class="item">
+            <div class="ico" style="background:${done?'var(--neon-green)':'var(--neon-yellow)'}">🎯</div>
+            <div style="flex:1">
+              <h3>${g.name} ${done ? '<span class="pill" style="background:var(--neon-green)">✅ Tercapai!</span>' : ''}</h3>
+              <p style="font-weight:800">${fmt(current)} / ${fmt(g.target)} • ${done ? 'Done 🎉' : `Sisa ${fmt(remaining)}`}</p>
+              <p style="font-size:11px;font-weight:700">⏳ Estimasi: ${done ? 'Sekarang' : `${daysLeft} hari lagi`}</p>
+              <div class="neo-progress" style="height:16px">
+                <div class="neo-progress-fill ${barClass}" style="width:${pct}%">${Math.round(pct)}%</div>
+              </div>
+            </div>
+          </div>`;
+      }).join('') || `<div class="muted" style="font-weight:800;padding:12px">Belum ada target tabungan 💪</div>`;
+      saveAll();
+    }
+
+    function renderStats(){
+      const box = document.getElementById('chartBox');
+      const c = calc();
+      const exp = state.tx.filter(x=>x.type==='expense');
+      const income = state.tx.filter(x=>x.type==='income');
+      const cats = [...new Set(exp.map(x=>x.category))];
+      const topCat = cats.map(cat=>({cat,val:sum(exp.filter(x=>x.category===cat))})).sort((a,b)=>b.val-a.val)[0];
+      document.getElementById('chartSummary').innerHTML = `
+        <div class="item"><div class="ico" style="background:var(--neon-purple)">◔</div><div><h3>Kategori Terbesar</h3><p style="font-weight:800">${topCat?.cat || '-'} - ${fmt(topCat?.val || 0)}</p></div></div>
+        <div class="item"><div class="ico" style="background:var(--neon-pink)">⇩</div><div><h3>Rata-rata Pengeluaran</h3><p style="font-weight:800">${fmt(exp.length ? sum(exp)/exp.length : 0)}</p></div></div>
+        <div class="item"><div class="ico" style="background:var(--neon-green)">⇧</div><div><h3>Rata-rata Pemasukan</h3><p style="font-weight:800">${fmt(income.length ? c.income/income.length : 0)}</p></div></div>
+        <div class="item"><div class="ico" style="background:var(--highlight)">▤</div><div><h3>Cash Flow</h3><p style="font-weight:800">${fmt(c.balance)}</p></div></div>
+      `;
+      box.innerHTML = `
+        <div style="display:grid;gap:12px;font-weight:800">
+          <div class="item" style="background:var(--highlight)"><div class="ico">◎</div><div><h3>Total Cash Flow</h3><p>${fmt(c.balance)}</p></div></div>
+          <div class="item"><div class="ico">▤</div><div><h3>Perbandingan Bulanan</h3><p>Transaksi bulan ini: ${state.tx.length} item</p></div></div>
+          <div class="item"><div class="ico">≋</div><div><h3>Pengeluaran Bulanan</h3><p>${fmt(exp.reduce((a,b)=>a+b.amount,0))}</p></div></div>
+        </div>`;
+    }
+
+    function renderNotif(){
+      document.getElementById('notifBadge').style.display = state.notif.length ? 'grid' : 'none';
+      document.getElementById('notifBadge').textContent = state.notif.length > 99 ? '99+' : state.notif.length;
+      document.getElementById('notifCountText').textContent = `${state.notif.length} item`;
+      document.getElementById('notifList').innerHTML = state.notif.map(n=>`
+        <div class="item">
+          <div class="ico" style="background:${n.category==='budget'?'var(--neon-pink)':n.category==='goal'?'var(--neon-green)':'var(--neon-yellow)'}">🔔</div>
+          <div style="flex:1">
+            <h3>${n.title}</h3>
+            <p style="font-weight:700">${n.category}</p>
+            <small>${new Date(n.date).toLocaleString('id-ID')}</small>
+          </div>
+          <button class="chip" style="border-color:var(--danger);font-size:10px" onclick="deleteNotif('${n.id}')">✕</button>
+        </div>`).join('') || `<div class="card muted" style="font-weight:800">Belum ada notifikasi 🔕</div>`;
+    }
+
+    window.deleteNotif = (id) => {
+      state.notif = state.notif.filter(n => n.id !== id);
+      saveAll();
+      renderNotif();
+      renderBadge();
+      toast('Notifikasi dihapus');
+    };
+
+    function renderBadge(){
+      const count = state.notif.length;
+      const badge = document.getElementById('notifBadge');
+      badge.style.display = count ? 'grid' : 'none';
+      badge.textContent = count > 99 ? '99+' : count;
+    }
+
+    function openSheet(title, body){
+      document.getElementById('sheetTitle').textContent = title;
+      document.getElementById('sheetBody').innerHTML = body;
+      document.getElementById('overlay').style.display = 'flex';
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function closeSheet(){ 
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    function txForm(edit = null){
+      const isEdit = !!edit;
+      openSheet(isEdit ? '✏ Edit Transaksi' : '＋ Tambah Transaksi', `
+        <div class="form">
+          <input id="txTitle" class="input" placeholder="Nama transaksi" value="${edit?.title || ''}">
+          <select id="txType" class="input">
+            <option value="expense" ${edit?.type === 'expense' ? 'selected' : ''}>🔴 Pengeluaran</option>
+            <option value="income" ${edit?.type === 'income' ? 'selected' : ''}>🟢 Pemasukan</option>
+            <option value="saving" ${edit?.type === 'saving' ? 'selected' : ''}>🟣 Tabungan</option>
+          </select>
+          <input id="txAmount" type="number" inputmode="numeric" class="input" placeholder="Nominal" value="${edit?.amount || ''}">
+          <select id="txAccount" class="input">
+            <option value="Cash" ${edit?.account === 'Cash' ? 'selected' : ''}>💵 Cash</option>
+            <option value="ATM" ${edit?.account === 'ATM' ? 'selected' : ''}>🏧 ATM</option>
+            <option value="Tabungan" ${edit?.account === 'Tabungan' ? 'selected' : ''}>🏦 Tabungan</option>
+          </select>
+          <input id="txCategory" class="input" placeholder="Kategori (contoh: Spotify, Makan)" value="${edit?.category || ''}">
+          <input id="txDate" type="date" class="input" value="${edit?.date || todayStr()}">
+          <textarea id="txNote" class="input" placeholder="Catatan">${edit?.note || ''}</textarea>
+          
+          <div class="toggle">
+            <div>
+              <strong style="font-weight:900">🔁 Transaksi Berulang</strong>
+              <p class="muted" style="font-size:11px;font-weight:700">Untuk subscription seperti Spotify, Netflix, dll</p>
+            </div>
+            <div class="switch" id="recurringSwitch"><i></i></div>
+          </div>
+          <div id="recurringOptions" style="display:none">
+            <select id="recurringFreq" class="input">
+              <option value="weekly">📅 Mingguan</option>
+              <option value="monthly" selected>📅 Bulanan</option>
+              <option value="yearly">📅 Tahunan</option>
+            </select>
+            <input id="recurringEndDate" type="date" class="input" placeholder="Tanggal berakhir (opsional)">
+          </div>
+          
+          <button class="btn" id="saveTx">${isEdit ? '💾 Update' : '✅ Simpan'}</button>
+        </div>`);
+      
+      const recurringSwitch = document.getElementById('recurringSwitch');
+      const recurringOptions = document.getElementById('recurringOptions');
+      recurringSwitch.onclick = () => {
+        recurringSwitch.classList.toggle('on');
+        recurringOptions.style.display = recurringSwitch.classList.contains('on') ? 'block' : 'none';
+      };
+      if(edit?.recurring) {
+        recurringSwitch.classList.add('on');
+        recurringOptions.style.display = 'block';
+        if(document.getElementById('recurringFreq')) document.getElementById('recurringFreq').value = edit.recurringFreq || 'monthly';
+        if(document.getElementById('recurringEndDate')) document.getElementById('recurringEndDate').value = edit.recurringEndDate || '';
+      }
+      
+      document.getElementById('saveTx').onclick = ()=>{
+        const tx = {
+          id: edit?.id || uuid(),
+          title: document.getElementById('txTitle').value.trim(),
+          type: document.getElementById('txType').value,
+          amount: +document.getElementById('txAmount').value || 0,
+          account: document.getElementById('txAccount').value,
+          category: document.getElementById('txCategory').value.trim() || 'Umum',
+          note: document.getElementById('txNote').value.trim(),
+          date: document.getElementById('txDate').value,
+          dateTime: edit?.dateTime || new Date().toISOString(),
+          recurring: document.getElementById('recurringSwitch').classList.contains('on'),
+          recurringFreq: document.getElementById('recurringSwitch').classList.contains('on') ? document.getElementById('recurringFreq').value : null,
+          recurringEndDate: document.getElementById('recurringSwitch').classList.contains('on') ? document.getElementById('recurringEndDate').value : null
+        };
+        if(!tx.title || !tx.amount) return toast('⚠️ Lengkapi data!');
+        if(isEdit) state.tx = state.tx.map(x => x.id === edit.id ? tx : x);
+        else state.tx.unshift(tx);
+        saveAll();
+        renderAll();
+        closeSheet();
+        pushNotif(isEdit ? '✏ Transaksi diperbarui' : `✅ Transaksi baru: ${tx.title}`, 'transaction');
+        checkBalanceAlert();
+      };
+    }
+
+    function transferForm(){
+      openSheet('↔️ Transfer Antar Akun', `
+        <div class="form">
+          <div style="background:var(--neon-green);padding:12px;border-radius:8px;border:3px solid var(--border);margin-bottom:8px">
+            <strong style="font-weight:900">💡 Transfer tidak mempengaruhi saldo total, hanya memindahkan antar akun.</strong>
+          </div>
+          <select id="transferFrom" class="input">
+            <option value="Cash">💵 Dari: Cash</option>
+            <option value="ATM">🏧 Dari: ATM</option>
+          </select>
+          <div style="text-align:center;font-size:28px;font-weight:900">↓</div>
+          <select id="transferTo" class="input">
+            <option value="ATM">🏧 Ke: ATM</option>
+            <option value="Cash">💵 Ke: Cash</option>
+          </select>
+          <input id="transferAmount" type="number" inputmode="numeric" class="input" placeholder="Jumlah transfer">
+          <textarea id="transferNote" class="input" placeholder="Catatan (opsional)"></textarea>
+          <button class="btn" id="saveTransfer" style="background:var(--neon-purple)">↔️ Transfer Sekarang</button>
+        </div>`);
+      
+      document.getElementById('saveTransfer').onclick = ()=>{
+        const from = document.getElementById('transferFrom').value;
+        const to = document.getElementById('transferTo').value;
+        const amount = +document.getElementById('transferAmount').value || 0;
+        const note = document.getElementById('transferNote').value.trim();
+        
+        if(from === to) return toast('⚠️ Akun tujuan harus berbeda!');
+        if(!amount || amount <= 0) return toast('⚠️ Masukkan jumlah transfer!');
+        
+        const fromBalance = getAccountBalance(from);
+        if(amount > fromBalance) return toast(`⚠️ Saldo ${from} tidak cukup! (${fmt(fromBalance)})`);
+        
+        const transfer = {
+          id: uuid(),
+          fromAccount: from,
+          toAccount: to,
+          amount: amount,
+          note: note,
+          date: todayStr(),
+          dateTime: new Date().toISOString(),
+          type: 'transfer'
+        };
+        
+        state.transfers.unshift(transfer);
+        saveAll();
+        renderAll();
+        closeSheet();
+        pushNotif(`✅ Transfer: ${fmt(amount)} dari ${from} ke ${to}`, 'transfer');
+      };
+    }
+
+    function budgetForm(){
+      openSheet('📊 Budget Bulanan', `
+        <div class="form">
+          <input id="bName" class="input" placeholder="Kategori budget (contoh: Hiburan)">
+          <input id="bLimit" type="number" inputmode="numeric" class="input" placeholder="Limit budget">
+          <button class="btn" id="saveBudget" style="background:var(--neon-green)">💾 Simpan Budget</button>
+        </div>`);
+      document.getElementById('saveBudget').onclick = ()=>{
+        const name = document.getElementById('bName').value.trim();
+        const limit = +document.getElementById('bLimit').value || 0;
+        if(!name || !limit) return toast('⚠️ Lengkapi data budget!');
+        state.budgets.unshift({id:uuid(), name, limit, notified:false, warned:false});
+        saveAll(); renderAll(); closeSheet();
+        pushNotif(`📊 Budget "${name}" disimpan: ${fmt(limit)}`, 'budget');
+      };
+    }
+
+    function goalForm(){
+      openSheet('🎯 Target Tabungan', `
+        <div class="form">
+          <input id="gName" class="input" placeholder="Nama target (contoh: Beli iPhone)">
+          <input id="gTarget" type="number" inputmode="numeric" class="input" placeholder="Target jumlah">
+          <input id="gCurrent" type="number" inputmode="numeric" class="input" placeholder="Tabungan saat ini">
+          <button class="btn" id="saveGoal" style="background:var(--neon-yellow);color:var(--text)">🎯 Simpan Target</button>
+        </div>`);
+      document.getElementById('saveGoal').onclick = ()=>{
+        const name = document.getElementById('gName').value.trim();
+        const target = +document.getElementById('gTarget').value || 0;
+        const current = +document.getElementById('gCurrent').value || 0;
+        if(!name || !target) return toast('⚠️ Lengkapi data target!');
+        state.goals.unshift({id:uuid(), name, target, current, done:false});
+        saveAll(); renderAll(); closeSheet();
+        pushNotif(`🎯 Target "${name}" disimpan: ${fmt(target)}`, 'goal');
+      };
+    }
+
+    function reminderForm(){
+      openSheet('⏰ Pengingat', `
+        <div class="form">
+          <input id="rName" class="input" placeholder="Nama pengingat">
+          <input id="rDate" type="date" class="input" value="${todayStr()}">
+          <input id="rTime" type="time" class="input" value="${timeStr()}">
+          <div class="toggle">
+            <span style="font-weight:900">🔄 Berulang</span>
+            <input id="rRepeat" type="checkbox">
+          </div>
+          <select id="rFreq" class="input"><option value="daily">Harian</option><option value="weekly">Mingguan</option><option value="monthly">Bulanan</option></select>
+          <button class="btn" id="saveReminder" style="background:var(--neon-pink)">⏰ Simpan Pengingat</button>
+        </div>`);
+      document.getElementById('saveReminder').onclick = ()=>{
+        const name = document.getElementById('rName').value.trim();
+        if(!name) return toast('⚠️ Masukkan nama pengingat!');
+        state.reminders.unshift({ id:uuid(), name, date:document.getElementById('rDate').value, time:document.getElementById('rTime').value, active:true, repeat:document.getElementById('rRepeat').checked, freq:document.getElementById('rFreq').value });
+        saveAll(); closeSheet();
+        pushNotif(`⏰ Pengingat "${name}" tersimpan`, 'reminder');
+      };
+    }
+
+    function processSubscriptions() {
+      const now = new Date();
+      const today = todayStr(now);
+      
+      state.tx.forEach(tx => {
+        if(!tx.recurring || !tx.recurringFreq) return;
+        if(tx.recurringEndDate && today > tx.recurringEndDate) return;
+        
+        const txDate = new Date(tx.dateTime);
+        let nextDate = new Date(txDate);
+        
+        while(nextDate < now) {
+          if(tx.recurringFreq === 'weekly') nextDate.setDate(nextDate.getDate() + 7);
+          else if(tx.recurringFreq === 'monthly') nextDate.setMonth(nextDate.getMonth() + 1);
+          else if(tx.recurringFreq === 'yearly') nextDate.setFullYear(nextDate.getFullYear() + 1);
+          else break;
+        }
+        
+        if(nextDate.toISOString().slice(0,10) !== today) return;
+        
+        const exists = state.tx.some(t =>
+          t.title === tx.title &&
+          t.amount === tx.amount &&
+          t.date === today &&
+          t.id !== tx.id
+        );
+        
+        if(!exists) {
+          const newTx = {
+            ...tx,
+            id: uuid(),
+            date: today,
+            dateTime: new Date().toISOString(),
+            recurringParentId: tx.id
+          };
+          state.tx.unshift(newTx);
+          pushNotif(`🔁 Auto: ${tx.title} (${fmt(tx.amount)})`, 'silent');
+        }
+      });
+      saveAll();
+    }
+
+    function showView(name){
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      const viewEl = document.getElementById(`view-${name}`);
+      if(viewEl) viewEl.classList.add('active');
+      document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.view===name));
+      if(name === 'history') renderHistory();
+    }
+
+    document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>showView(t.dataset.view));
+
+    document.querySelectorAll('.action').forEach(a=>a.onclick=()=>{
+      const x = a.dataset.open;
+      if(x==='tx') txForm();
+      if(x==='budget') budgetForm();
+      if(x==='goal') goalForm();
+      if(x==='reminder') reminderForm();
+    });
+
+    document.getElementById('transferBtn').onclick = transferForm;
+    document.getElementById('closeSheet').onclick = closeSheet;
+    document.getElementById('overlay').onclick = e=>{ if(e.target.id==='overlay') closeSheet(); };
+    document.getElementById('prevMonth').onclick = ()=>{ state.calendar.month--; if(state.calendar.month<0){state.calendar.month=11;state.calendar.year--;} renderDashboard(); };
+    document.getElementById('nextMonth').onclick = ()=>{ state.calendar.month++; if(state.calendar.month>11){state.calendar.month=0;state.calendar.year++;} renderDashboard(); };
+    document.getElementById('searchTx').oninput = renderHistory;
+    document.getElementById('filterCategory').onchange = renderHistory;
+    document.getElementById('sortTx').onchange = renderHistory;
+
+    function syncSettingsUI(){
+      document.getElementById('themeSelect').value = state.settings.theme;
+      document.getElementById('langSelect').value = state.settings.lang;
+      document.getElementById('currencySelect').value = state.settings.currency;
+      document.getElementById('timeFormatSelect').value = state.settings.timeFormat;
+      document.getElementById('minBalance').value = state.settings.minBalance || 0;
+      document.getElementById('hideBalanceSwitch').classList.toggle('on', !!state.settings.hideBalance);
+      document.getElementById('soundReminderSwitch').classList.toggle('on', !!state.settings.soundReminder);
+      document.getElementById('pinInput').value = state.settings.pin || '';
+    }
+
+    document.getElementById('themeSelect').onchange = ()=>{ state.settings.theme = document.getElementById('themeSelect').value; saveAll(); applyTheme(); };
+    document.getElementById('minBalance').onchange = ()=>{ state.settings.minBalance = +document.getElementById('minBalance').value||0; saveAll(); checkBalanceAlert(); };
+    document.getElementById('hideBalanceSwitch').onclick = ()=>{ state.settings.hideBalance = !state.settings.hideBalance; saveAll(); syncSettingsUI(); renderDashboard(); };
+    document.getElementById('soundReminderSwitch').onclick = ()=>{ state.settings.soundReminder = !state.settings.soundReminder; saveAll(); syncSettingsUI(); };
+    document.getElementById('savePinBtn').onclick = ()=>{ state.settings.pin = document.getElementById('pinInput').value.trim(); saveAll(); toast(state.settings.pin ? '🔒 PIN disimpan' : '🔓 PIN dihapus'); };
+    document.getElementById('lockNowBtn').onclick = ()=> showLock();
+    
+    document.getElementById('resetBtn').onclick = ()=> {
+      document.getElementById('confirmReset').classList.add('active');
+      document.getElementById('resetConfirmInput').value = '';
+      document.getElementById('executeReset').disabled = true;
+      document.getElementById('resetConfirmInput').focus();
+    };
+    
+    document.getElementById('cancelReset').onclick = ()=> {
+      document.getElementById('confirmReset').classList.remove('active');
+    };
+    
+    document.getElementById('resetConfirmInput').oninput = (e) => {
+      document.getElementById('executeReset').disabled = e.target.value !== 'HAPUS';
+    };
+    
+    document.getElementById('executeReset').onclick = ()=> {
+      if(document.getElementById('resetConfirmInput').value === 'HAPUS') {
+        localStorage.clear();
+        document.getElementById('confirmReset').classList.remove('active');
+        toast('🗑 Semua data telah direset!');
+        setTimeout(() => location.reload(), 1000);
+      }
+    };
+    
+    document.getElementById('confirmReset').onclick = (e) => {
+      if(e.target.id === 'confirmReset') document.getElementById('confirmReset').classList.remove('active');
+    };
+    
+    document.getElementById('backupBtn').onclick = ()=> backupData();
+    document.getElementById('restoreBtn').onclick = ()=> restoreData();
+    document.getElementById('exportJsonBtn').onclick = ()=> backupData();
+    document.getElementById('importJsonBtn').onclick = ()=> restoreData();
+    document.getElementById('exportCsvBtn').onclick = ()=> exportCSV();
+    document.getElementById('exportExcelBtn').onclick = ()=> toast('📊 Export Excel siap');
+    document.getElementById('exportPdfBtn').onclick = ()=> toast('📄 Export PDF siap');
+    
+    document.getElementById('notifBtn').onclick = ()=> showView('notif');
+    document.getElementById('menuBtn').onclick = ()=> showView('settings');
+
+    function backupData(){
+      const data = {
+        tx:state.tx, notif:state.notif, reminders:state.reminders,
+        budgets:state.budgets, goals:state.goals, transfers:state.transfers,
+        settings:state.settings, profile:state.profile
+      };
+      const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `my-money-backup-${todayStr()}.json`;
+      a.click();
+      pushNotif('💾 Backup selesai!', 'backup');
+    }
+
+    function restoreData(){
+      const inp = document.createElement('input');
+      inp.type = 'file';
+      inp.accept = '.json';
+      inp.onchange = e=>{
+        const f = e.target.files[0];
+        if(!f) return;
+        const r = new FileReader();
+        r.onload = ()=>{
+          try{
+            const d = JSON.parse(r.result);
+            state.tx = d.tx || [];
+            state.notif = d.notif || [];
+            state.reminders = d.reminders || [];
+            state.budgets = d.budgets || [];
+            state.goals = d.goals || [];
+            state.transfers = d.transfers || [];
+            state.settings = d.settings || state.settings;
+            state.profile = d.profile || state.profile;
+            saveAll();
+            applyTheme();
+            syncSettingsUI();
+            renderAll();
+            pushNotif('📥 Import berhasil!', 'backup');
+          }catch{
+            toast('❌ File tidak valid');
+          }
+        };
+        r.readAsText(f);
+      };
+      inp.click();
+    }
+
+    function exportCSV(){
+      const rows = [['title','type','amount','category','account','date','recurring']];
+      state.tx.forEach(x=>rows.push([x.title,x.type,x.amount,x.category,x.account,x.date,x.recurring?'Yes':'No']));
+      state.transfers.forEach(t=>rows.push([`Transfer:${t.fromAccount}→${t.toAccount}`,'transfer',t.amount,'Transfer',`${t.fromAccount}→${t.toAccount}`,t.date,'No']));
+      const blob = new Blob([rows.map(r=>r.join(',')).join('\n')], {type:'text/csv'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `my-money-export-${todayStr()}.csv`;
+      a.click();
+      pushNotif('📊 Export CSV berhasil!', 'export');
+    }
+
+    window.editTx = (id)=>{
+      const tx = state.tx.find(x=>x.id===id);
+      if(!tx) return;
+      txForm(tx);
+    };
+    
+    window.deleteItem = (id, type)=>{
+      const item = type === 'transfer' ? state.transfers.find(x=>x.id===id) : state.tx.find(x=>x.id===id);
+      if(!item) return;
+      const title = type === 'transfer' ? `Transfer: ${item.fromAccount}→${item.toAccount}` : item.title;
+      if(!confirm(`🗑 Hapus "${title}"?`)) return;
+      if(type === 'transfer') state.transfers = state.transfers.filter(x=>x.id!==id);
+      else state.tx = state.tx.filter(x=>x.id!==id);
+      saveAll();
+      renderAll();
+      pushNotif(`🗑 Dihapus: ${title}`, 'transaction');
+    };
+
+    window.deleteTx = (id) => deleteItem(id, 'tx');
+
+    let pinBuffer = '';
+    function buildPinPad(){
+      const pad = document.getElementById('pinPad');
+      pad.innerHTML = ['1','2','3','4','5','6','7','8','9','⌫','0','↵'].map(v=>`<button class="pin-key">${v}</button>`).join('');
+      pad.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+        const v = b.textContent;
+        if(v==='⌫') pinBuffer = pinBuffer.slice(0,-1);
+        else if(v==='↵') checkPin();
+        else if(pinBuffer.length < 4) pinBuffer += v;
+        renderDots();
+      });
+    }
+    function renderDots(){ document.getElementById('pinDots').innerHTML = Array.from({length:4},(_,i)=>`<span class="pin-dot ${i<pinBuffer.length?'on':''}"></span>`).join(''); }
+    function checkPin(){ if(!state.settings.pin) return hideLock(); if(pinBuffer === state.settings.pin) hideLock(); else { toast('❌ PIN salah!'); pinBuffer=''; renderDots(); } }
+    function showLock(){ document.getElementById('pinScreen').style.display = 'flex'; pinBuffer=''; renderDots(); }
+    function hideLock(){ document.getElementById('pinScreen').style.display = 'none'; }
+    document.getElementById('pinClear').onclick = ()=>{ pinBuffer=''; renderDots(); };
+    document.getElementById('pinSubmit').onclick = checkPin;
+
+    function initPWA(){
+      const manifest = {
+        name:'My Money',
+        short_name:'My Money',
+        start_url:'.',
+        scope:'.',
+        display:'fullscreen',
+        background_color:'#FAF7EF',
+        theme_color:'#2563EB',
+        icons:[
+          {src:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjQ4IiBmaWxsPSIjMjU2M0VCIi8+PHRleHQgeD0iNTAlIiB5PSI1OCUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9Ijg0IiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4kPC90ZXh0Pjwvc3ZnPg==',sizes:'192x192',type:'image/svg+xml'},
+          {src:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEyOCIgc3R5bGU9ImZpbGw6IzI1NjNFQjsiLz48dGV4dCB4PSI1MCUiIHk9IjU4JSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iMjI2IiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4kPC90ZXh0Pjwvc3ZnPg==',sizes:'512x512',type:'image/svg+xml'}
+        ]
+      };
+      const href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type:'application/json'}));
+      document.getElementById('manifestLink').href = href;
+
+      const swCode = `
+        const CACHE='my-money-${APP_VERSION}';
+        self.addEventListener('install',e=>{
+          e.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(['./'])));
+          self.skipWaiting();
+        });
+        self.addEventListener('activate',e=>{
+          e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(key=>key!==CACHE?caches.delete(key):null))));
+          self.clients.claim();
+          self.clients.matchAll().then(clients=>{
+            clients.forEach(client=>client.postMessage({type:'UPDATE_AVAILABLE',version:'${APP_VERSION}'}));
+          });
+        });
+        self.addEventListener('fetch',e=>{
+          e.respondWith(
+            caches.match(e.request).then(cached=>{
+              const fetchPromise = fetch(e.request).then(networkResponse=>{
+                if(networkResponse && networkResponse.status===200){
+                  const responseClone = networkResponse.clone();
+                  caches.open(CACHE).then(cache=>cache.put(e.request,responseClone));
+                }
+                return networkResponse;
+              }).catch(()=>cached);
+              return cached || fetchPromise;
+            })
+          );
+        });
+        self.addEventListener('message',e=>{
+          if(e.data && e.data.type==='SKIP_WAITING') self.skipWaiting();
+        });
+      `;
+      const swUrl = URL.createObjectURL(new Blob([swCode], {type:'text/javascript'}));
+      
+      if('serviceWorker' in navigator){
+        navigator.serviceWorker.register(swUrl).then(reg=>{
+          reg.addEventListener('updatefound',()=>{
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange',()=>{
+              if(newWorker.state==='installed' && navigator.serviceWorker.controller){
+                toast('🔄 Update tersedia!');
+                const updateBtn = document.createElement('div');
+                updateBtn.className = 'toast';
+                updateBtn.style.cssText = 'background:var(--primary);color:#fff;cursor:pointer;pointer-events:auto;text-align:center;font-weight:900;';
+                updateBtn.innerHTML = '<span>🔄 Update Sekarang</span>';
+                updateBtn.onclick = ()=>{
+                  newWorker.postMessage({type:'SKIP_WAITING'});
+                  window.location.reload();
+                };
+                document.getElementById('toastWrap').appendChild(updateBtn);
+                setTimeout(()=>updateBtn.remove(),15000);
+              }
+            });
+          });
+        }).catch(()=>{});
+      }
+    }
+
+    function renderAll(){
+      applyTheme();
+      syncSettingsUI();
+      renderDashboard();
+      renderHistory();
+      renderNotif();
+      renderBadge();
+      const cats = [...new Set(state.tx.map(x=>x.category))];
+      const transferExists = state.transfers.length > 0;
+      document.getElementById('filterCategory').innerHTML = `<option value="all">Semua Kategori</option>` + 
+        cats.map(c=>`<option value="${c}">${c}</option>`).join('') +
+        (transferExists ? `<option value="Transfer">↔️ Transfer</option>` : '');
+    }
+
+    function checkBalanceAlert(){
+      const c = calc();
+      const min = Number(state.settings.minBalance || 0);
+      if(min > 0 && c.balance <= min) pushNotif('⚠️ Saldo rendah!', 'warning');
+    }
+
+    function checkReminders(){
+      const now = new Date();
+      state.reminders.forEach(r=>{
+        if(!r.active) return;
+        if(`${r.date} ${r.time}` === `${todayStr(now)} ${timeStr(now)}`){
+          toast(`⏰ ${r.name}`);
+          if(state.settings.soundReminder){
+            try{ new Audio('data:audio/mp3;base64,//uQxA...').play().catch(()=>{}); }catch{}
+          }
+          if(!r.repeat) r.active = false;
+          saveAll();
+        }
+      });
+    }
+
+    function bindGestureDelete(){
+      let startX = 0, activeEl = null;
+      document.addEventListener('touchstart', e=>{
+        const item = e.target.closest('[data-swipe]');
+        if(!item) return;
+        startX = e.touches[0].clientX;
+        activeEl = item;
+      }, {passive:true});
+      document.addEventListener('touchend', e=>{
+        if(!activeEl) return;
+        const endX = (e.changedTouches && e.changedTouches[0].clientX) || startX;
+        if(startX - endX > 80) {
+          const id = activeEl.dataset.swipe;
+          const isTransfer = state.transfers.some(t => t.id === id);
+          deleteItem(id, isTransfer ? 'transfer' : 'tx');
+        }
+        activeEl = null;
+      }, {passive:true});
+    }
+
+    function init(){
+      document.getElementById('splash').style.display = 'flex';
+      initPWA();
+      buildPinPad();
+      bindGestureDelete();
+      renderDots();
+      renderAll();
+      setTimeout(()=>document.getElementById('splash').style.display='none',650);
+      if(state.settings.pin) showLock();
+      if('Notification' in window && Notification.permission === 'default') Notification.requestPermission().catch(()=>{});
+      setInterval(()=>{
+        document.getElementById('digitalClock').textContent = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        document.getElementById('clockMini').textContent = timeStr();
+        document.getElementById('greeting').textContent = getGreeting();
+        checkReminders();
+      }, 1000);
+      setInterval(()=> {
+        processSubscriptions();
+        renderGoals();
+      }, 30000);
+      if('wakeLock' in navigator){ try{ navigator.wakeLock.request('screen').catch(()=>{}); }catch{} }
+    }
+
+    document.addEventListener('visibilitychange', ()=> { if(!document.hidden) renderAll(); });
+    init();
+  </script>
+</body>
+</html>
